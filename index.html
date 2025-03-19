@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Details</title>
+    <title>Custom Transaction Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,31 +14,47 @@
             height: 100vh;
             margin: 0;
         }
-        .transaction-box {
-            border: 2px solid #6c5ce7;
-            padding: 20px;
-            width: 350px;
+        .container {
+            width: 400px;
             background-color: #ffffff;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .transaction-box h2 {
-            margin-top: 0;
+        h2 {
             color: #6c5ce7;
             text-align: center;
-        }
-        .transaction-box .entry {
             margin-bottom: 20px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #ddd;
         }
-        .transaction-box .entry .label {
+        label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: bold;
             color: #333;
         }
-        .transaction-box .entry .amount {
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .transaction-box {
+            border: 2px solid #6c5ce7;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+        .transaction-box .entry {
+            margin-bottom: 10px;
+        }
+        .transaction-box .label {
+            font-weight: bold;
+            color: #333;
+        }
+        .transaction-box .amount {
             color: #00b894;
             font-weight: bold;
         }
@@ -53,6 +69,7 @@
             text-decoration: none;
             margin-top: 20px;
             font-weight: bold;
+            cursor: pointer;
         }
         .download-button:hover {
             background-color: #5a4fcf;
@@ -61,26 +78,85 @@
 </head>
 <body>
 
-<div class="transaction-box">
-    <h2>Transaction Details</h2>
-    <div class="entry">
-        <div class="label">Date And Time:</div>
-        <div>19/03/2025 05:44:08</div>
-        <div class="label">Type:</div>
-        <div>Team Deposit</div>
-        <div class="label">Remark:</div>
-        <div>Team Deposit Reward</div>
-        <div class="label">Amount:</div>
-        <div class="amount">+6000.0000 USDT</div>
+<div class="container">
+    <h2>Custom Transaction Details</h2>
+    <label for="date">Date and Time:</label>
+    <input type="text" id="date" placeholder="Enter date and time">
+    
+    <label for="type">Type:</label>
+    <input type="text" id="type" placeholder="Enter transaction type">
+    
+    <label for="remark">Remark:</label>
+    <input type="text" id="remark" placeholder="Enter remark">
+    
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" placeholder="Enter amount">
+    
+    <button onclick="generateTransaction()">Generate Transaction</button>
+
+    <div class="transaction-box" id="transactionBox" style="display: none;">
+        <div class="entry">
+            <div class="label">Date and Time:</div>
+            <div id="displayDate"></div>
+        </div>
+        <div class="entry">
+            <div class="label">Type:</div>
+            <div id="displayType"></div>
+        </div>
+        <div class="entry">
+            <div class="label">Remark:</div>
+            <div id="displayRemark"></div>
+        </div>
+        <div class="entry">
+            <div class="label">Amount:</div>
+            <div class="amount" id="displayAmount"></div>
+        </div>
     </div>
-    <div class="entry">
-        <div class="label">Date And Time:</div>
-        <div>19/03/2025 05:31:09</div>
-        <div class="label">Type:</div>
-        <div>Team Commission</div>
-    </div>
-    <a href="#" class="download-button">Download Details</a>
+
+    <a href="#" class="download-button" id="downloadButton" style="display: none;">Download Details</a>
 </div>
+
+<script>
+    function generateTransaction() {
+        const date = document.getElementById('date').value;
+        const type = document.getElementById('type').value;
+        const remark = document.getElementById('remark').value;
+        const amount = document.getElementById('amount').value;
+
+        if (date && type && remark && amount) {
+            document.getElementById('displayDate').textContent = date;
+            document.getElementById('displayType').textContent = type;
+            document.getElementById('displayRemark').textContent = remark;
+            document.getElementById('displayAmount').textContent = `+${amount} USDT`;
+
+            document.getElementById('transactionBox').style.display = 'block';
+            document.getElementById('downloadButton').style.display = 'block';
+        } else {
+            alert('Please fill in all fields.');
+        }
+    }
+
+    document.getElementById('downloadButton').addEventListener('click', function() {
+        const date = document.getElementById('date').value;
+        const type = document.getElementById('type').value;
+        const remark = document.getElementById('remark').value;
+        const amount = document.getElementById('amount').value;
+
+        const content = `Transaction Details\n\n` +
+                        `Date and Time: ${date}\n` +
+                        `Type: ${type}\n` +
+                        `Remark: ${remark}\n` +
+                        `Amount: +${amount} USDT\n`;
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'transaction_details.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+</script>
 
 </body>
 </html>
